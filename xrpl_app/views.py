@@ -2,7 +2,9 @@ from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import (
+    IsAuthenticatedOrReadOnly, IsAuthenticated,
+)
 
 from xrpl_app.filters import PaymentsFilter
 from xrpl_app.models import PaymentTransaction
@@ -14,7 +16,7 @@ from xrpl_app.serializers import ListCreatePaymentSerializer
 
 
 class ListCreatePaymentsView(generics.ListCreateAPIView):
-    queryset = PaymentTransaction.objects.all().select_related(
+    queryset = PaymentTransaction.objects.select_related(
         "account", "destination", "asset_info", "asset_info__issuer"
     )
     serializer_class = ListCreatePaymentSerializer
@@ -30,3 +32,17 @@ class ListCreatePaymentsView(generics.ListCreateAPIView):
         return self.create(request, *args, **kwargs)
 
 
+class RetrieveUpdateDestroyPaymentView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = PaymentTransaction.objects.select_related(
+        "account", "destination", "asset_info", "asset_info__issuer"
+    )
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    serializer_class = ListCreatePaymentSerializer
+
+    @transaction.atomic
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    @transaction.atomic
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)

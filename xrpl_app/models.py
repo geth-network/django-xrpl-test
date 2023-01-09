@@ -64,14 +64,23 @@ class PaymentTransaction(models.Model):
     @property
     @admin.display(description="Hash")
     def transaction_hash(self):
-        return f"{self.hash[:10]}..."
+        trans_hash = self.hash
+        if len(trans_hash) > 10:
+            return f"{trans_hash[:10]}…"
+        return trans_hash
 
     @property
     @admin.display(description="Source Hash")
     def account_hash(self):
-        return f"{self.account.hash[:10]}..."
+        src_hash = self.account.hash
+        if len(src_hash) > 10:
+            return f"{src_hash[:10]}…"
+        return src_hash
 
     @property
     @admin.display(description="Destination Hash")
     def dest_hash(self):
-        return f"{self.destination.hash[:10]}..."
+        dest_hash = self.destination.hash
+        if len(dest_hash) > 10:
+            return f"{dest_hash[:10]}…"
+        return dest_hash
