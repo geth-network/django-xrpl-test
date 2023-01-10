@@ -17,7 +17,7 @@ def payment_payload():
         "destination": "TESTACC",
         "asset_info": {"issuer": "BCDEF", "currency": "USD"},
         "amount": "5000",
-        "ledger_idx": "1",
+        "ledger_idx": 1,
         "fee": "1",
         "destination_tag": 12,
     }

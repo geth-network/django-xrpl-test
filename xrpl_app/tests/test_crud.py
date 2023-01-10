@@ -1,11 +1,25 @@
 import pytest
 from django.urls import reverse
+from openapi_tester.exceptions import UndocumentedSchemaSectionError
 
 
 @pytest.mark.django_db
 def test_get_transactions(client, transaction, schema_tester):
     response = client.get(reverse("list-create-payments"), HTTP_HOST="localhost:8001")
     schema_tester.validate_response(response)
+
+
+@pytest.mark.django_db
+def test_create_transactions_invalid_amount(auth_client, payment_payload, schema_tester):
+    payment_payload.update(amount='test')
+    response = auth_client.post(
+        reverse("list-create-payments"),
+        data=payment_payload,
+        HTTP_HOST="localhost:8001",
+        format="json",
+    )
+    with pytest.raises(UndocumentedSchemaSectionError):
+        schema_tester.validate_response(response)
 
 
 @pytest.mark.django_db

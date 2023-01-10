@@ -57,9 +57,11 @@ class Command(BaseCommand):
         return classic_addr
 
     async def main(self, account: str, url: str) -> None:
+        logger.info("Starting WS connection")
         async with AsyncWebsocketClient(url) as client:
             transactions = await get_account_transactions(account, client)
             await self.actualize_history(transactions)
+        logger.info("Data was added to DB")
 
     @staticmethod
     async def is_payment_exists(data: dict) -> Tuple[bool, dict]:
@@ -103,7 +105,10 @@ class Command(BaseCommand):
         amount = data["Amount"]
         if isinstance(amount, str):
             insert_data["amount"] = amount
-            default_asset, _ = AssetInfo.objects.get_or_create()
+            default_asset, _ = AssetInfo.objects.get_or_create(
+                issuer=XRPLAccount.get_default_account(),
+                currency=Currency.get_default_currency()
+            )
             insert_data["asset_info"] = default_asset
         elif isinstance(amount, dict):
             insert_data["amount"] = amount["value"]
