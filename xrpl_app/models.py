@@ -21,11 +21,22 @@ class XRPLAccount(models.Model):
         return obj
 
 
+class Currency(models.Model):
+    name = models.CharField(max_length=40, primary_key=True)
+
+    @staticmethod
+    def get_default_currency():
+        obj, _ = Currency.objects.get_or_create(
+            name=settings.DEFAULT_XRPL_ASSET
+        )
+        return obj
+
+
 class AssetInfo(models.Model):
     issuer = models.ForeignKey(XRPLAccount, on_delete=models.CASCADE,
                                default=XRPLAccount.get_default_account)
-    currency = models.CharField(max_length=40,
-                                default=settings.DEFAULT_XRPL_ASSET)
+    currency = models.ForeignKey(Currency, on_delete=models.CASCADE,
+                                 default=Currency.get_default_currency)
 
     class Meta:
         constraints = [

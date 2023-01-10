@@ -17,7 +17,8 @@ from xrpl_app.serializers import ListCreatePaymentSerializer
 
 class ListCreatePaymentsView(ListCreateAPIView):
     queryset = PaymentTransaction.objects.select_related(
-        "account", "destination", "asset_info", "asset_info__issuer"
+        "account", "destination", "asset_info", "asset_info__issuer",
+        "asset_info__currency"
     )
     serializer_class = ListCreatePaymentSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
@@ -34,7 +35,8 @@ class ListCreatePaymentsView(ListCreateAPIView):
 
 class RetrieveUpdateDestroyPaymentView(RetrieveUpdateDestroyAPIView):
     queryset = PaymentTransaction.objects.select_related(
-        "account", "destination", "asset_info", "asset_info__issuer"
+        "account", "destination", "asset_info", "asset_info__issuer",
+        "asset_info__currency"
     )
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = ListCreatePaymentSerializer

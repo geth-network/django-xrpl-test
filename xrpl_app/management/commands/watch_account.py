@@ -11,7 +11,7 @@ from xrpl.asyncio.account import get_account_transactions
 from django.db import transaction
 from django.core.management.base import BaseCommand
 
-from xrpl_app.models import PaymentTransaction, XRPLAccount, AssetInfo
+from xrpl_app.models import PaymentTransaction, XRPLAccount, AssetInfo, Currency
 
 
 logger = logging.getLogger(__name__)
@@ -118,9 +118,9 @@ class Command(BaseCommand):
         elif isinstance(amount, dict):
             insert_data["amount"] = amount["value"]
             issuer, _ = XRPLAccount.objects.get_or_create(hash=amount["issuer"])
+            currency, _ = Currency.objects.get_or_create(name=amount["currency"])
             asset, _ = AssetInfo.objects.get_or_create(
-                issuer=issuer,
-                currency=amount["currency"]
+                issuer=issuer, currency=currency
             )
             insert_data["asset_info"] = asset
 

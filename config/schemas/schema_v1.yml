@@ -1,8 +1,7 @@
 openapi: 3.0.3
 info:
-  title: Your Project API
+  title: XRPL Test Project
   version: 1.0.0
-  description: Your project description
 paths:
   /api/auth/token/:
     post:
