@@ -52,3 +52,14 @@ def auth_client(django_db_setup, django_db_blocker):
     refresh = RefreshToken.for_user(user)
     client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
     return client
+
+
+@pytest.fixture(scope="session")
+def client_invalid_auth_token(django_db_setup, django_db_blocker):
+    with django_db_blocker.unblock():
+        user = get_user_model().objects.create_user(
+            username="user-invalid", password="password"
+        )
+    client = APIClient()
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer some-invalid-data")
+    return client

@@ -5,7 +5,8 @@ from openapi_tester.exceptions import UndocumentedSchemaSectionError
 
 @pytest.mark.django_db
 def test_get_transactions(client, transaction, schema_tester):
-    response = client.get(reverse("list-create-payments"), HTTP_HOST="localhost:8001")
+    response = client.get(reverse("list-create-payments"),
+                          HTTP_HOST="localhost:8001")
     schema_tester.validate_response(response)
 
 
@@ -24,6 +25,7 @@ def test_create_transactions_invalid_amount(auth_client, payment_payload, schema
 
 @pytest.mark.django_db
 def test_create_transactions(auth_client, payment_payload, schema_tester):
+    print("")
     response = auth_client.post(
         reverse("list-create-payments"),
         data=payment_payload,

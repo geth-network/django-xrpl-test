@@ -1,0 +1,5 @@
+DJANGO_SECRET_KEY=django-insecure-%c-zcvo1mz0w*ne9bd9$hs^0392#p!*rog4sseo4(1=^*nd2&n%p$
+DEBUG=0
+
+API_SCHEMA_FILEPATH=./config/schemas/api_v1.yml
+DB_DATA_FIXTURE=./tests/fixtures/db_dump.json

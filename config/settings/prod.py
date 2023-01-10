@@ -13,6 +13,8 @@ SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"] = timedelta(days=1)
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
 
+if 'whitenoise.middleware.WhiteNoiseMiddleware' in MIDDLEWARE:
+    MIDDLEWARE.remove("whitenoise.middleware.WhiteNoiseMiddleware")
 # DATABASES
 # ------------------------------------------------------------------------------
-DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)  # noqa F405
+DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=100)  # noqa F405

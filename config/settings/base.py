@@ -187,9 +187,9 @@ SIMPLE_JWT = {
 
 
 API_SCHEMA_FILEPATH = env.str(
-    "API_SCHEMA_FILEPATH", default="config/schemas/schema_v1.yml"
+    "API_SCHEMA_FILEPATH", default="config/schemas/api_v1.yml"
 )
 
 DB_DATA_FIXTURE = env.str(
-    "DB_DATA_FIXTURE", default="xrpl_app/tests/fixtures/db_dump.json"
+    "DB_DATA_FIXTURE", default="tests/fixtures/db_dump.json"
 )
