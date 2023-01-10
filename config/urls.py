@@ -15,19 +15,16 @@ Including another URLconf
 """
 from django.conf import settings
 from django.contrib import admin
-from django.urls import path, include, re_path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView, TokenRefreshView
-)
+from django.urls import include, path
+from rest_framework_simplejwt.views import (TokenObtainPairView,
+                                            TokenRefreshView)
 
 urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
     path("api/", include("xrpl_app.urls")),
-    path('api/auth/token/', TokenObtainPairView.as_view(),
-         name='token_obtain_pair'),
-    path('api/auth/token/refresh/', TokenRefreshView.as_view(),
-         name='token_refresh')
+    path("api/auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]
 
 if settings.DEBUG:
@@ -37,6 +34,5 @@ if settings.DEBUG:
         import debug_toolbar
 
         urlpatterns = [
-                          path("__debug__/", include(debug_toolbar.urls)),
+            path("__debug__/", include(debug_toolbar.urls)),
         ] + urlpatterns
-

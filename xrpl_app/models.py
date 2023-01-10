@@ -1,6 +1,6 @@
+from django.conf import settings
 from django.contrib import admin
 from django.db import models
-from django.conf import settings
 
 from xrpl_app.validators import validate_numeric
 
@@ -17,9 +17,7 @@ class XRPLAccount(models.Model):
 
     @staticmethod
     def get_default_account():
-        obj, _ = XRPLAccount.objects.get_or_create(
-            hash=settings.DEFAULT_XRPL_ACCOUNT
-        )
+        obj, _ = XRPLAccount.objects.get_or_create(hash=settings.DEFAULT_XRPL_ACCOUNT)
         return obj
 
 
@@ -28,23 +26,22 @@ class Currency(models.Model):
 
     @staticmethod
     def get_default_currency():
-        obj, _ = Currency.objects.get_or_create(
-            name=settings.DEFAULT_XRPL_ASSET
-        )
+        obj, _ = Currency.objects.get_or_create(name=settings.DEFAULT_XRPL_ASSET)
         return obj
 
 
 class AssetInfo(models.Model):
-    issuer = models.ForeignKey(XRPLAccount, on_delete=models.CASCADE,
-                               default=XRPLAccount.get_default_account)
-    currency = models.ForeignKey(Currency, on_delete=models.CASCADE,
-                                 default=Currency.get_default_currency)
+    issuer = models.ForeignKey(
+        XRPLAccount, on_delete=models.CASCADE, default=XRPLAccount.get_default_account
+    )
+    currency = models.ForeignKey(
+        Currency, on_delete=models.CASCADE, default=Currency.get_default_currency
+    )
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["issuer", "currency"],
-                name="unique_asset_issuer_currency"
+                fields=["issuer", "currency"], name="unique_asset_issuer_currency"
             )
         ]
         verbose_name_plural = "Assets Info"
@@ -55,12 +52,15 @@ class AssetInfo(models.Model):
 
 
 class PaymentTransaction(models.Model):
-    account = models.ForeignKey(XRPLAccount, on_delete=models.CASCADE,
-                                related_name="account")
-    destination = models.ForeignKey(XRPLAccount, on_delete=models.CASCADE,
-                                    related_name="destination")
-    asset_info = models.ForeignKey(AssetInfo, on_delete=models.CASCADE,
-                                   related_name="asset_info")
+    account = models.ForeignKey(
+        XRPLAccount, on_delete=models.CASCADE, related_name="account"
+    )
+    destination = models.ForeignKey(
+        XRPLAccount, on_delete=models.CASCADE, related_name="destination"
+    )
+    asset_info = models.ForeignKey(
+        AssetInfo, on_delete=models.CASCADE, related_name="asset_info"
+    )
     ledger_idx = models.PositiveBigIntegerField()
     destination_tag = models.PositiveBigIntegerField(null=True)
     hash = models.CharField(max_length=64, primary_key=True)

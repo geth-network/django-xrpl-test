@@ -2,7 +2,6 @@ from datetime import timedelta
 
 from .base import *  # noqa
 
-
 # https://docs.djangoproject.com/en/4.1/ref/settings/#debug
 DEBUG = True
 

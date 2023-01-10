@@ -15,14 +15,11 @@ def payment_payload():
         "hash": "ABCD",
         "account": "BCDEF",
         "destination": "TESTACC",
-        "asset_info": {
-            "issuer": "BCDEF",
-            "currency": "USD"
-        },
+        "asset_info": {"issuer": "BCDEF", "currency": "USD"},
         "amount": "5000",
         "ledger_idx": "1",
         "fee": "1",
-        "destination_tag": 12
+        "destination_tag": 12,
     }
     return payload
 
@@ -35,7 +32,7 @@ def schema_tester():
 @pytest.fixture(scope="session")
 def fill_db(django_db_setup, django_db_blocker):
     with django_db_blocker.unblock():
-        call_command('loaddata', settings.DB_DATA_FIXTURE)
+        call_command("loaddata", settings.DB_DATA_FIXTURE)
 
 
 @pytest.fixture(scope="session")
@@ -49,9 +46,9 @@ def transaction(fill_db, django_db_blocker):
 def auth_client(django_db_setup, django_db_blocker):
     with django_db_blocker.unblock():
         user = get_user_model().objects.create_user(
-            username='user', password='password'
+            username="user", password="password"
         )
     client = APIClient()
     refresh = RefreshToken.for_user(user)
-    client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh.access_token}')
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
     return client
