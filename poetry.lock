@@ -674,17 +674,6 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
-name = "whitenoise"
-version = "6.3.0"
-description = "Radically simplified static file serving for WSGI applications"
-category = "main"
-optional = false
-python-versions = ">=3.7"
-
-[package.extras]
-brotli = ["Brotli"]
-
-[[package]]
 name = "wrapt"
 version = "1.14.1"
 description = "Module for decorators, wrappers and monkey patching."
@@ -712,7 +701,7 @@ websockets = {version = ">=10.0,<11.0", markers = "python_version >= \"3.10\" an
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "ffcd7d94ff5464270f920a7f0be7cc018ecfb6c227ecdf702132c2c470cc4ef8"
+content-hash = "05df425c90bd7bc4f18e7847bb00ab2b2f6de93688a6477b4f6bfd884f20f5f6"
 
 [metadata.files]
 asgiref = [
@@ -1207,10 +1196,6 @@ websockets = [
     {file = "websockets-10.4-pp39-pypy39_pp73-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b627c266f295de9dea86bd1112ed3d5fafb69a348af30a2422e16590a8ecba13"},
     {file = "websockets-10.4-pp39-pypy39_pp73-win_amd64.whl", hash = "sha256:05a7233089f8bd355e8cbe127c2e8ca0b4ea55467861906b80d2ebc7db4d6b72"},
     {file = "websockets-10.4.tar.gz", hash = "sha256:eef610b23933c54d5d921c92578ae5f89813438fded840c2e9809d378dc765d3"},
-]
-whitenoise = [
-    {file = "whitenoise-6.3.0-py3-none-any.whl", hash = "sha256:cf8ecf56d86ba1c734fdb5ef6127312e39e92ad5947fef9033dc9e43ba2777d9"},
-    {file = "whitenoise-6.3.0.tar.gz", hash = "sha256:fe0af31504ab08faa1ec7fc02845432096e40cc1b27e6a7747263d7b30fb51fa"},
 ]
 wrapt = [
     {file = "wrapt-1.14.1-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:1b376b3f4896e7930f1f772ac4b064ac12598d1c38d04907e696cc4d794b43d3"},

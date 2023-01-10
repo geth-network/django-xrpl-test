@@ -30,8 +30,8 @@ urlpatterns = [
 
 ]
 
-urlpatterns += staticfiles_urlpatterns()
 if settings.DEBUG:
+    urlpatterns += staticfiles_urlpatterns()
     if "debug_toolbar" in settings.INSTALLED_APPS:
         import debug_toolbar
 

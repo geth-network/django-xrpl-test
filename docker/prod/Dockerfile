@@ -6,8 +6,7 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1 \
     PYTHONPATH=/opt \
-    LANG=C.UTF-8 \
-    USE_DOCKER=1
+    LANG=C.UTF-8
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl &&  \
@@ -17,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /etc/apt/sources.list.d/*
 
-COPY requirements/dev.requirements.txt requirements.txt
+COPY requirements/prod.requirements.txt requirements.txt
 RUN python -m pip install --upgrade pip && \
     python -m pip install -r requirements.txt
 

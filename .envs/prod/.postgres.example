@@ -1,0 +1,3 @@
+POSTGRES_DB=xrpl
+POSTGRES_USER=some-user
+POSTGRES_PASSWORD=some-password

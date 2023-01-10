@@ -10,7 +10,7 @@ services:
     networks:
       - xrpl-network
     env_file:
-      - .envs/dev/.postgres
+      - .envs/prod/.postgres
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
@@ -22,41 +22,66 @@ services:
   xrpl-django:
     image: xrpl-django-service
     container_name: xrpl-django-service
+    hostname: xrpl-django-service
     restart: unless-stopped
     build:
       context: .
-      dockerfile: docker/dev/Dockerfile
+      dockerfile: docker/prod/Dockerfile
+    volumes:
+      - static-data:/opt/staticfiles
     networks:
       - xrpl-network
-    ports:
-      - "8080:80"
+    expose:
+      - 8000
     depends_on:
       - db
+      - redoc
     working_dir: /opt
     environment:
       - POSTGRES_HOST=xrpl-db
-      - DJANGO_SETTINGS_MODULE=config.settings.dev
     env_file:
-      - .envs/dev/.postgres
-      - .envs/dev/.django
-    command: gunicorn config.wsgi:application -b 0.0.0.0:80 -w 3 --log-level debug
+      - .envs/prod/.postgres
+      - .envs/prod/.django
+    command: gunicorn config.wsgi:application -b 0.0.0.0:8000 -w 3 --log-level debug
     healthcheck:
-      test: curl -f -s http://localhost:80/healthcheck/ || exit 1
+      test: curl -f -s http://localhost:8000/healthcheck/ || exit 1
       interval: 10s
       timeout: 5s
       retries: 3
 
   redoc:
     image: redocly/redoc
-    ports:
-      - "8081:80"
+    container_name: xrpl-redoc
+    hostname: xrpl-redoc
     environment:
       - SPEC_URL=swagger/swagger.yaml
+    ports:
+      - "8081:80"
     volumes:
       - ./config/schemas/api_v1.yml:/usr/share/nginx/html/swagger/swagger.yaml
+    healthcheck:
+      test: curl -f -s http://localhost:80 || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  nginx:
+    build: ./nginx
+    hostname: xrpl-nginx
+    container_name: xrpl-nginx
+    working_dir: /opt
+    depends_on:
+      - xrpl-django
+    networks:
+      - xrpl-network
+    volumes:
+      - static-data:/opt/staticfiles
+    ports:
+      - "1337:80"
 
 volumes:
   db-data:
+  static-data:
 
 networks:
   xrpl-network:
