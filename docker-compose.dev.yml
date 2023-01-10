@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: postgres:15-alpine
+    hostname: xrpl-db
+    container_name: xrpl-db
+    restart: unless-stopped
+    networks:
+      - xrpl-network
+    env_file:
+      - .envs/dev/.postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  xrpl-django:
+    image: xrpl-django-service
+    container_name: xrpl-django-service
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: docker/dev/Dockerfile
+    networks:
+      - xrpl-network
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    working_dir: /opt
+    environment:
+      - POSTGRES_HOST=xrpl-db
+      - DJANGO_SETTINGS_MODULE=config.settings.dev
+    env_file:
+      - .envs/dev/.postgres
+      - .envs/dev/.django
+    command: gunicorn config.wsgi:application -b 0.0.0.0:80 -w 3 --log-level debug
+    healthcheck:
+      test: curl -f -s http://localhost:80/healthcheck/ || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  redoc:
+    image: redocly/redoc
+    ports:
+      - "8081:80"
+    environment:
+      - SPEC_URL=swagger/swagger.yaml
+    volumes:
+      - ./config/schemas/api_v1.yml:/usr/share/nginx/html/swagger/swagger.yaml
+
+volumes:
+  db-data:
+
+networks:
+  xrpl-network:
+    name: xrpl-network

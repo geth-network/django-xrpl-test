@@ -358,9 +358,11 @@ components:
           nullable: true
         amount:
           description: Value of payment transaction
+          example: "12345"
           type: string
           maxLength: 24
         fee:
+          example: "12345"
           description: Transaction cost
           type: string
           maxLength: 24
@@ -417,8 +419,10 @@ components:
           nullable: true
         amount:
           type: string
+          example: "12345"
           maxLength: 24
         fee:
+          example: "12345"
           type: string
           maxLength: 24
     TokenObtainPair:

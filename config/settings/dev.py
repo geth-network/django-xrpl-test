@@ -3,7 +3,7 @@ from datetime import timedelta
 from .base import *  # noqa
 
 # https://docs.djangoproject.com/en/4.1/ref/settings/#debug
-DEBUG = True
+DEBUG = env.bool("DEBUG", True)
 
 # https://docs.djangoproject.com/en/4.1/ref/settings/#secret-key
 SECRET_KEY = env(

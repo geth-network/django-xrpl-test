@@ -6,6 +6,7 @@ from xrpl_app.validators import validate_numeric
 
 
 class XRPLAccount(models.Model):
+    # https://xrpl.org/accounts.html#addresses
     hash = models.CharField(max_length=35, primary_key=True)
 
     class Meta:
@@ -22,6 +23,7 @@ class XRPLAccount(models.Model):
 
 
 class Currency(models.Model):
+    # https://xrpl.org/currency-formats.html#nonstandard-currency-codes
     name = models.CharField(max_length=40, primary_key=True)
 
     @staticmethod
@@ -61,9 +63,12 @@ class PaymentTransaction(models.Model):
     asset_info = models.ForeignKey(
         AssetInfo, on_delete=models.CASCADE, related_name="asset_info"
     )
+    # https://xrpl.org/basic-data-types.html#ledger-index
     ledger_idx = models.PositiveBigIntegerField()
     destination_tag = models.PositiveBigIntegerField(null=True)
+    # https://xrpl.org/basic-data-types.html#hashes
     hash = models.CharField(max_length=64, primary_key=True)
+    # https://xrpl.org/currency-formats.html
     amount = models.CharField(max_length=24, validators=[validate_numeric])
     fee = models.CharField(max_length=24, validators=[validate_numeric])
 
