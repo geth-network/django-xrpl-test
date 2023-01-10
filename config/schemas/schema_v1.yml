@@ -1,0 +1,463 @@
+openapi: 3.0.3
+info:
+  title: Your Project API
+  version: 1.0.0
+  description: Your project description
+paths:
+  /api/auth/token/:
+    post:
+      operationId: auth_token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/auth/token/refresh/:
+    post:
+      operationId: auth_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/payments/:
+    get:
+      operationId: payments_list
+      parameters:
+      - in: query
+        name: account
+        description: Exact match by payment transaction source account
+        schema:
+          type: string
+      - in: query
+        name: account__contains
+        description: Case-sensitive containment match
+        schema:
+          type: string
+      - in: query
+        name: amount
+        description: Exact match by value of payment transaction
+        schema:
+          type: string
+      - in: query
+        name: currency
+        description: Exact match by currency code
+        schema:
+          type: string
+      - in: query
+        name: currency__contains
+        description: Case-sensitive containment match
+        schema:
+          type: string
+      - in: query
+        name: issuer
+        description: Exact match by currency code issuer (also an account)
+        schema:
+          type: string
+      - in: query
+        name: issuer__contains
+        description: Case-sensitive containment match
+        schema:
+          type: string
+      - in: query
+        name: destination
+        description: Exact match by target payment transaction account
+        schema:
+          type: string
+      - in: query
+        name: destination__contains
+        description: Case-sensitive containment match
+        schema:
+          type: string
+      - in: query
+        name: destination_tag
+        description: Exact match
+        schema:
+          type: integer
+      - in: query
+        name: destination_tag__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: hash
+        description: Exact match by hash of payment transaction
+        schema:
+          type: string
+      - in: query
+        name: hash__contains
+        description: Case-sensitive containment match
+        schema:
+          type: string
+      - in: query
+        name: ledger_idx
+        description: Exact match by ledger index
+        schema:
+          type: integer
+      - in: query
+        name: ledger_idx__gt
+        description: Greater than
+        schema:
+          type: integer
+      - in: query
+        name: ledger_idx__gte
+        description: Greater than or equal to
+        schema:
+          type: integer
+      - in: query
+        name: ledger_idx__lt
+        description: Less than
+        schema:
+          type: integer
+      - in: query
+        name: ledger_idx__lte
+        description: Less than or equal to
+        schema:
+          type: integer
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - payments
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedListCreatePaymentList'
+          description: ''
+    post:
+      operationId: payments_create
+      tags:
+      - payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListCreatePayment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ListCreatePayment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ListCreatePayment'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListCreatePayment'
+          description: ''
+  /api/payments/{hash}:
+    get:
+      operationId: payments_retrieve
+      parameters:
+      - in: path
+        name: hash
+        schema:
+          type: string
+        description: A unique value identifying this Payment Transaction.
+        required: true
+      tags:
+      - payments
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListCreatePayment'
+          description: ''
+    put:
+      operationId: payments_update
+      parameters:
+      - in: path
+        name: hash
+        schema:
+          type: string
+        description: A unique value identifying this Payment Transaction.
+        required: true
+      tags:
+      - payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListCreatePayment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ListCreatePayment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ListCreatePayment'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListCreatePayment'
+          description: ''
+    patch:
+      operationId: payments_partial_update
+      parameters:
+      - in: path
+        name: hash
+        schema:
+          type: string
+        description: A unique value identifying this Payment Transaction.
+        required: true
+      tags:
+      - payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedListCreatePayment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedListCreatePayment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedListCreatePayment'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListCreatePayment'
+          description: ''
+    delete:
+      operationId: payments_destroy
+      parameters:
+      - in: path
+        name: hash
+        schema:
+          type: string
+        description: A unique value identifying this Payment Transaction.
+        required: true
+      tags:
+      - payments
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    AssetInfo:
+      type: object
+      properties:
+        issuer:
+          type: string
+          description: Currency code issuer
+          maxLength: 35
+        currency:
+          type: string
+          description: Currency code
+          default: XRP drops
+          maxLength: 40
+      required:
+      - issuer
+    ListCreatePayment:
+      type: object
+      properties:
+        hash:
+          type: string
+          description: Unique payment transaction ID
+          maxLength: 64
+        account:
+          type: string
+          description: Source account of transaction
+          maxLength: 35
+        destination:
+          type: string
+          description: Target account of transaction
+          maxLength: 35
+        asset_info:
+          $ref: '#/components/schemas/AssetInfo'
+        ledger_idx:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        destination_tag:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        amount:
+          description: Value of payment transaction
+          type: string
+          maxLength: 24
+        fee:
+          description: Transaction cost
+          type: string
+          maxLength: 24
+      required:
+      - account
+      - amount
+      - asset_info
+      - destination
+      - fee
+      - hash
+      - ledger_idx
+    PaginatedListCreatePaymentList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListCreatePayment'
+    PatchedListCreatePayment:
+      type: object
+      properties:
+        hash:
+          type: string
+          maxLength: 64
+        account:
+          $ref: '#/components/schemas/XRPLAccount'
+        destination:
+          $ref: '#/components/schemas/XRPLAccount'
+        asset_info:
+          $ref: '#/components/schemas/AssetInfo'
+        ledger_idx:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        destination_tag:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        amount:
+          type: string
+          maxLength: 24
+        fee:
+          type: string
+          maxLength: 24
+    TokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - password
+      - refresh
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+      required:
+      - access
+      - refresh
+    XRPLAccount:
+      type: string
+      maxLength: 35
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
