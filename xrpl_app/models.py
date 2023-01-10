@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.db import models
 from django.conf import settings
 
+from xrpl_app.validators import validate_numeric
+
 
 class XRPLAccount(models.Model):
     hash = models.CharField(max_length=35, primary_key=True)
@@ -62,8 +64,8 @@ class PaymentTransaction(models.Model):
     ledger_idx = models.PositiveBigIntegerField()
     destination_tag = models.PositiveBigIntegerField(null=True)
     hash = models.CharField(max_length=64, primary_key=True)
-    amount = models.CharField(max_length=24)
-    fee = models.CharField(max_length=24)
+    amount = models.CharField(max_length=24, validators=[validate_numeric])
+    fee = models.CharField(max_length=24, validators=[validate_numeric])
 
     class Meta:
         verbose_name_plural = "Payment Transactions"

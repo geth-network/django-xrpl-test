@@ -10,10 +10,6 @@ from xrpl_app.filters import PaymentsFilter
 from xrpl_app.models import PaymentTransaction
 from xrpl_app.serializers import ListCreatePaymentSerializer
 
-"""{"hash": "2", "account": "2", "destination": "2", 
- "asset_info": {"issuer": "2", "currency": "BTC", "amount": "5000"},
-"ledger_idx": "5", "destination_tag": "6", "fee": 7}"""
-
 
 class ListCreatePaymentsView(ListCreateAPIView):
     queryset = PaymentTransaction.objects.select_related(

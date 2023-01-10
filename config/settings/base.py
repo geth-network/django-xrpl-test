@@ -184,3 +184,10 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
+
+
+API_SCHEMA_FILEPATH = env.str("API_SCHEMA_FILEPATH",
+                              default="config/schemas/schema_v1.yml")
+
+DB_DATA_FIXTURE = env.str("DB_DATA_FIXTURE",
+                          default="xrpl_app/tests/fixtures/db_dump.json")

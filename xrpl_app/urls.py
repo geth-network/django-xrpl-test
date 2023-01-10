@@ -20,6 +20,8 @@ from xrpl_app.views import (
 )
 
 urlpatterns = [
-    path("payments/<pk>", RetrieveUpdateDestroyPaymentView.as_view()),
-    re_path("payments/?", ListCreatePaymentsView.as_view()),
+    path("payments/<pk>/", RetrieveUpdateDestroyPaymentView.as_view(),
+         name="retrieve-update-delete-payments"),
+    path("payments/", ListCreatePaymentsView.as_view(),
+         name="list-create-payments"),
 ]
