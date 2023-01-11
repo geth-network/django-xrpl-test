@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from openapi_tester.schema_tester import SchemaTester
 from rest_framework.test import APIClient
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from xrpl_app.models import PaymentTransaction
 
@@ -40,26 +39,3 @@ def transaction(fill_db, django_db_blocker):
     with django_db_blocker.unblock():
         obj = PaymentTransaction.objects.all().first()
     return obj
-
-
-@pytest.fixture(scope="session")
-def auth_client(django_db_setup, django_db_blocker):
-    with django_db_blocker.unblock():
-        user = get_user_model().objects.create_user(
-            username="user", password="password"
-        )
-    client = APIClient()
-    refresh = RefreshToken.for_user(user)
-    client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
-    return client
-
-
-@pytest.fixture(scope="session")
-def client_invalid_auth_token(django_db_setup, django_db_blocker):
-    with django_db_blocker.unblock():
-        user = get_user_model().objects.create_user(
-            username="user-invalid", password="password"
-        )
-    client = APIClient()
-    client.credentials(HTTP_AUTHORIZATION=f"Bearer some-invalid-data")
-    return client

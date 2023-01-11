@@ -10,9 +10,6 @@ SECRET_KEY = env(
     "DJANGO_SECRET_KEY",
     default="django-insecure-%c-o1mz0w*ne9bd9$hs^0392#p!*rog4sseo4(1=^*nd2&n%p$",
 )
-SIMPLE_JWT["SIGNING_KEY"] = SECRET_KEY
-SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"] = timedelta(hours=4)
-SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"] = timedelta(days=1)
 # https://docs.djangoproject.com/en/4.1/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
 

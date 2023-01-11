@@ -13,16 +13,15 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path
-from xrpl_app.views import (
-    ListCreatePaymentsView, RetrievePaymentView,
-    ParseAndStoreLastPaymentsView
-)
+from rest_framework import routers
 
-urlpatterns = [
-    path("payments/<pk>/", RetrievePaymentView.as_view(),
-         name="retrieve-update-delete-payments"),
-    path("payments/", ListCreatePaymentsView.as_view(),
-         name="list-create-payments"),
-    path("store-payments/", ParseAndStoreLastPaymentsView.as_view())
-]
+from xrpl_app.views import PaymentsViewSet, AccountsViewSet, AssetsInfoViewSet
+
+
+router = routers.SimpleRouter()
+router.register(r'payments', PaymentsViewSet)
+router.register(r'xrpl-accounts', AccountsViewSet)
+router.register(r'assets', AssetsInfoViewSet)
+
+urlpatterns = router.urls
+print("")

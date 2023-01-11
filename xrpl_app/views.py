@@ -1,57 +1,66 @@
 import logging
 
-from django.db import transaction
 from django.apps import apps
+from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.generics import (ListAPIView,
-                                     RetrieveAPIView, CreateAPIView)
-from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
+from rest_framework.mixins import RetrieveModelMixin, CreateModelMixin, \
+    ListModelMixin
 from rest_framework.response import Response
-from xrpl.clients import JsonRpcClient
+from rest_framework.viewsets import GenericViewSet
 from xrpl.account import get_account_transactions
+from xrpl.clients import JsonRpcClient
 
-from xrpl_app.filters import PaymentsFilter
+from xrpl_app.filters import PaymentsFilter, AccountsFilter, AssetsFilter
 from xrpl_app.models import PaymentTransaction, XRPLAccount, AssetInfo, Currency
 from xrpl_app.serializers import ListPaymentSerializer, \
-    RequestLastPaymentsSerializer
-
+    RequestLastPaymentsSerializer, XRPLAccountSerializer, AssetInfoSerializer
 
 logger = logging.getLogger(__name__)
 
 
-class ListCreatePaymentsView(ListAPIView):
+class AccountsViewSet(RetrieveModelMixin,
+                      ListModelMixin,
+                      GenericViewSet):
+    queryset = XRPLAccount.objects.all()
+    serializer_class = XRPLAccountSerializer
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+    search_fields = ("hash",)
+    filterset_fields = "__all__"
+    filterset_class = AccountsFilter
+
+
+class AssetsInfoViewSet(ListModelMixin,
+                        GenericViewSet):
+    queryset = AssetInfo.objects.select_related("issuer", "currency")
+    serializer_class = AssetInfoSerializer
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+    search_fields = ("issuer__hash", "currency__name")
+    filterset_fields = "__all__"
+    filterset_class = AssetsFilter
+
+
+class PaymentsViewSet(RetrieveModelMixin,
+                      CreateModelMixin,
+                      ListModelMixin,
+                      GenericViewSet):
     queryset = PaymentTransaction.objects.select_related(
         "account", "destination", "asset_info",
         "asset_info__issuer", "asset_info__currency",
     )
-    serializer_class = ListPaymentSerializer
-    permission_classes = (AllowAny,)
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ("account__hash", "destination__hash", "hash")
     ordering_fields = ("ledger_idx",)
     filterset_fields = "__all__"
     filterset_class = PaymentsFilter
 
+    def get_serializer_class(self):
+        if self.action == "create":
+            return RequestLastPaymentsSerializer
+        elif self.action in ["list", "retrieve"]:
+            return ListPaymentSerializer
 
-class RetrievePaymentView(RetrieveAPIView):
-    queryset = PaymentTransaction.objects.select_related(
-        "account", "destination", "asset_info",
-        "asset_info__issuer", "asset_info__currency",
-    )
-    permission_classes = (IsAuthenticatedOrReadOnly,)
-    serializer_class = ListPaymentSerializer
-
-
-class ParseAndStoreLastPaymentsView(CreateAPIView):
-    queryset = PaymentTransaction.objects.select_related(
-        "account", "destination", "asset_info",
-        "asset_info__issuer", "asset_info__currency",
-    )
-    serializer_class = RequestLastPaymentsSerializer
-    permission_classes = (AllowAny,)
-
-    def post(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         serializer = self.get_serializer_class()(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.data
@@ -59,7 +68,7 @@ class ParseAndStoreLastPaymentsView(CreateAPIView):
         transactions = get_account_transactions(data["account"], client)
         objects = self.save_data(transactions)
         result = ListPaymentSerializer(instance=objects, many=True).data
-        return Response(result, status=200)
+        return Response(result, status=201)
 
     @staticmethod
     def filter_payments(transactions: list) -> dict:

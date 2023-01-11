@@ -1,5 +1,6 @@
-from rest_framework import serializers
+from collections import OrderedDict
 
+from rest_framework import serializers
 from xrpl_app.models import (AssetInfo, Currency, PaymentTransaction,
                              XRPLAccount)
 
@@ -12,27 +13,23 @@ class RequestLastPaymentsSerializer(serializers.Serializer):
 class CurrencySerializer(serializers.ModelSerializer):
     class Meta:
         model = Currency
-        fields = "__all__"
-
-    def to_internal_value(self, data):
-        instance, _ = self.Meta.model.objects.get_or_create(name=data)
-        return instance
+        fields = ("name", )
+        read_only_fields = fields
 
     def to_representation(self, instance):
         return instance.name
 
 
 class XRPLAccountSerializer(serializers.ModelSerializer):
+    hash = serializers.CharField(max_length=35)
+
     class Meta:
         model = XRPLAccount
         fields = "__all__"
+        read_only_fields = ("hash", )
 
-    def to_internal_value(self, data):
-        instance, _ = self.Meta.model.objects.get_or_create(hash=data)
-        return instance
-
-    def to_representation(self, instance):
-        return instance.hash
+    # def to_representation(self, instance):
+    #     return instance.hash
 
 
 class AssetInfoSerializer(serializers.ModelSerializer):
@@ -42,13 +39,12 @@ class AssetInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = AssetInfo
         fields = ("issuer", "currency")
+        read_only_fields = fields
 
-    def to_internal_value(self, data):
-        ret = super().to_internal_value(data)
-        obj_assets, _ = self.Meta.model.objects.get_or_create(
-            issuer=ret["issuer"], currency=ret["currency"]
-        )
-        return obj_assets
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        ret["issuer"] = instance.issuer_id
+        return ret
 
 
 class ListPaymentSerializer(serializers.ModelSerializer):
@@ -59,3 +55,15 @@ class ListPaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentTransaction
         fields = "__all__"
+        read_only_fields = ("account", "destination", "asset_info", "ledger_idx",
+                            "destination_tag", "hash", "amount", "fee")
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        ret["account"] = instance.account_id
+        ret["destination"] = instance.destination_id
+        ret["asset_info"] = OrderedDict(
+            issuer=instance.asset_info.issuer_id,
+            currency=instance.asset_info.currency_id
+        )
+        return ret
