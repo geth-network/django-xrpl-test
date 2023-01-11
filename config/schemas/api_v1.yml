@@ -57,7 +57,7 @@ paths:
           description: ''
   /api/payments/:
     get:
-      operationId: payments_list
+      operationId: Get all payments from DB
       parameters:
       - in: query
         name: account
@@ -184,7 +184,7 @@ paths:
                 $ref: '#/components/schemas/PaginatedListPaymentList'
           description: ''
     post:
-      operationId: payments_create
+      operationId: Request account payments to store them in DB
       tags:
       - payments
       requestBody:
@@ -211,7 +211,7 @@ paths:
           description: ''
   /api/payments/{hash}/:
     get:
-      operationId: payments_retrieve
+      operationId: Get payment from DB by payment hash
       parameters:
       - in: path
         name: hash
@@ -233,7 +233,7 @@ paths:
           description: ''
   /api/xrpl-accounts/:
     get:
-      operationId: xrpl_accounts_list
+      operationId: Get XRPL accounts list
       parameters:
       - in: query
         name: hash
@@ -275,7 +275,7 @@ paths:
           description: ''
   /api/xrpl-accounts/{hash}/:
     get:
-      operationId: xrpl_accounts_retrieve
+      operationId: Get XRPL account by account id
       parameters:
       - in: path
         name: hash
