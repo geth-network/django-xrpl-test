@@ -7,8 +7,9 @@ Clone the repository:
 
 
 Prepare env files:
-1) `cp .envs/prod/.django.example .envs/prod/.django` 
-2) `cp .envs/prod/.postgres.example .envs/prod/.postgres`
+
+`cp .envs/prod/.django.example .envs/prod/.django && 
+cp .envs/prod/.postgres.example .envs/prod/.postgres`
 
 Build and run docker containers:
 
@@ -24,6 +25,6 @@ Run pytest:
 `docker-compose run xrpl-django pytest`
 
 ## API Schema
-API documentation is available with ReDoc container:
+API documentation will be available with ReDoc container:
 
 *http://localhost:8081/*
