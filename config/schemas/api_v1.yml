@@ -63,7 +63,7 @@ paths:
       parameters:
       - in: query
         name: account
-        description: Exact match by payment transaction source account
+        description: Exact match by source account of payment transaction
         schema:
           type: string
       - in: query

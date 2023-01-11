@@ -33,12 +33,8 @@ class Currency(models.Model):
 
 
 class AssetInfo(models.Model):
-    issuer = models.ForeignKey(
-        XRPLAccount, on_delete=models.CASCADE, default=XRPLAccount.get_default_account
-    )
-    currency = models.ForeignKey(
-        Currency, on_delete=models.CASCADE, default=Currency.get_default_currency
-    )
+    issuer = models.ForeignKey(XRPLAccount, on_delete=models.CASCADE)
+    currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
 
     class Meta:
         constraints = [
@@ -48,6 +44,14 @@ class AssetInfo(models.Model):
         ]
         verbose_name_plural = "Assets Info"
         verbose_name = "Asset Info"
+
+    @staticmethod
+    def get_default_asset():
+        obj, _ = AssetInfo.objects.get_or_create(
+            issuer=XRPLAccount.get_default_account(),
+            currency=Currency.get_default_currency()
+        )
+        return obj
 
     def __str__(self):
         return f"{self.currency}.{self.issuer}"

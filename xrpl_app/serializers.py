@@ -4,6 +4,11 @@ from xrpl_app.models import (AssetInfo, Currency, PaymentTransaction,
                              XRPLAccount)
 
 
+class RequestLastPaymentsSerializer(serializers.Serializer):
+    url = serializers.URLField()
+    account = serializers.CharField(max_length=35)
+
+
 class CurrencySerializer(serializers.ModelSerializer):
     class Meta:
         model = Currency
@@ -59,7 +64,7 @@ class ListCreatePaymentSerializer(serializers.ModelSerializer):
         account = validated_data.pop("account")
         dest_acc = validated_data.pop("destination")
         asset_obj = validated_data.pop("asset_info")
-        payment = PaymentTransaction.objects.create(
+        payment, _ = PaymentTransaction.objects.create(
             account=account,
             destination=dest_acc,
             asset_info=asset_obj,

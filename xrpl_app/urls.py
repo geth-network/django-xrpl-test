@@ -14,15 +14,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-
-from xrpl_app.views import (ListCreatePaymentsView,
-                            RetrieveUpdateDestroyPaymentView)
+from xrpl_app.views import (
+    ListCreatePaymentsView, RetrievePaymentView,
+    ParseAndStoreLastPayments
+)
 
 urlpatterns = [
-    path(
-        "payments/<pk>/",
-        RetrieveUpdateDestroyPaymentView.as_view(),
-        name="retrieve-update-delete-payments",
-    ),
-    path("payments/", ListCreatePaymentsView.as_view(), name="list-create-payments"),
+    path("payments/<pk>/", RetrievePaymentView.as_view(),
+         name="retrieve-update-delete-payments"),
+    path("payments/", ListCreatePaymentsView.as_view(),
+         name="list-create-payments"),
+    path("store-payments/", ParseAndStoreLastPayments.as_view())
 ]
