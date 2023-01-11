@@ -3,27 +3,27 @@
 ## Get Started
 Clone the repository:
 
-`git clone https://github.com/geth-network/django-xrpl-test.git && cd django-xrpl-test`
+`$ git clone https://github.com/geth-network/django-xrpl-test.git && cd django-xrpl-test`
 
 
 Prepare env files:
 
-`cp .envs/prod/.django.example .envs/prod/.django && cp .envs/prod/.postgres.example .envs/prod/.postgres`
+`$ cp .envs/prod/.django.example .envs/prod/.django && cp .envs/prod/.postgres.example .envs/prod/.postgres`
 
 Build and run docker containers:
 
-`docker-compose up --build -d`
+`$ docker-compose up --build -d`
 
 The Django application will be available on http://localhost:1337
 
 Collect Django static files to static root folder and apply Django migration files:
 
-`docker-compose run xrpl-django bash -c "python manage.py collectstatic && python manage.py migrate"`
+`$ docker-compose run xrpl-django bash -c "python manage.py collectstatic && python manage.py migrate"`
 
 
 Run pytest:
 
-`docker-compose run xrpl-django pytest`
+`$ docker-compose run xrpl-django pytest`
 
 ## API Schema
 API documentation will be available with ReDoc container:
