@@ -7,7 +7,7 @@ servers:
 paths:
   /api/assets/:
     get:
-      operationId: assets_list
+      operationId: All currencies that stored in DB
       parameters:
       - in: query
         name: currency
