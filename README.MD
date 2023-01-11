@@ -14,15 +14,14 @@ Build and run docker containers:
 
 `docker-compose up --build -d`
 
-Collect Django static files to static root folder:
+Collect Django static files to static root folder and apply Django migration files:
 
-`docker-compose run xrpl-django manage.py collectstatic`
-
-Apply Django migration files:
-
-`docker-compose run xrpl-django manage.py migrate`
+`docker-compose run xrpl-django bash -c "python manage.py collectstatic && python manage.py migrate"`
 
 
+Run pytest:
+
+`docker-compose run xrpl-django pytest`
 
 ## API Schema
 API documentation is available with ReDoc container:
