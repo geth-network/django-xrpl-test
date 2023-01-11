@@ -3,7 +3,7 @@
 ## Get Started
 Clone the repository:
 
-`git clone https://github.com/geth-network/django-xrpl-test.git`
+`git clone https://github.com/geth-network/django-xrpl-test.git && cd django-xrpl-test`
 
 
 Prepare env files:
