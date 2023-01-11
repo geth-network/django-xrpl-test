@@ -18,7 +18,7 @@ Collect Django static files to static root folder:
 
 `docker-compose run xrpl-django manage.py collectstatic`
 
-Apply django migration file:
+Apply Django migration files:
 
 `docker-compose run xrpl-django manage.py migrate`
 
