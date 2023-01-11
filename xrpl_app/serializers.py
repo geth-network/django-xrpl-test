@@ -51,7 +51,7 @@ class AssetInfoSerializer(serializers.ModelSerializer):
         return obj_assets
 
 
-class ListCreatePaymentSerializer(serializers.ModelSerializer):
+class ListPaymentSerializer(serializers.ModelSerializer):
     account = XRPLAccountSerializer()
     destination = XRPLAccountSerializer()
     asset_info = AssetInfoSerializer()
@@ -59,15 +59,3 @@ class ListCreatePaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentTransaction
         fields = "__all__"
-
-    def create(self, validated_data):
-        account = validated_data.pop("account")
-        dest_acc = validated_data.pop("destination")
-        asset_obj = validated_data.pop("asset_info")
-        payment, _ = PaymentTransaction.objects.create(
-            account=account,
-            destination=dest_acc,
-            asset_info=asset_obj,
-            **validated_data
-        )
-        return payment

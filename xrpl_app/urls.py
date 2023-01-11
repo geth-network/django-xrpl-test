@@ -16,7 +16,7 @@ Including another URLconf
 from django.urls import path
 from xrpl_app.views import (
     ListCreatePaymentsView, RetrievePaymentView,
-    ParseAndStoreLastPayments
+    ParseAndStoreLastPaymentsView
 )
 
 urlpatterns = [
@@ -24,5 +24,5 @@ urlpatterns = [
          name="retrieve-update-delete-payments"),
     path("payments/", ListCreatePaymentsView.as_view(),
          name="list-create-payments"),
-    path("store-payments/", ParseAndStoreLastPayments.as_view())
+    path("store-payments/", ParseAndStoreLastPaymentsView.as_view())
 ]
