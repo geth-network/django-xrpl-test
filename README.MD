@@ -8,8 +8,7 @@ Clone the repository:
 
 Prepare env files:
 
-`cp .envs/prod/.django.example .envs/prod/.django && 
-cp .envs/prod/.postgres.example .envs/prod/.postgres`
+`cp .envs/prod/.django.example .envs/prod/.django && cp .envs/prod/.postgres.example .envs/prod/.postgres`
 
 Build and run docker containers:
 
