@@ -2,6 +2,8 @@ openapi: 3.0.3
 info:
   title: XRPL Test Project
   version: 1.1.0
+servers:
+  - url: http://localhost:1337
 paths:
   /api/assets/:
     get:
@@ -436,9 +438,11 @@ components:
       properties:
         url:
           type: string
+          description: XRPL server address
           format: uri
         account:
           type: string
+          description: ID of target account to store its payments
           maxLength: 35
       required:
       - account
