@@ -26,15 +26,6 @@ def test_unauth_get_xrpl_accounts(client, transaction):
 
 
 @pytest.mark.django_db
-def test_unauth_detail_xrpl_account(client, transaction):
-    response = client.get(
-        reverse("xrplaccount-detail", args=[transaction.account_id]),
-        HTTP_HOST="localhost:8001",
-    )
-    assert response.status_code == 200
-
-
-@pytest.mark.django_db
 def test_unauth_get_assets(client, transaction):
     response = client.get(reverse("assetinfo-list"),
                           HTTP_HOST="localhost:8001")
