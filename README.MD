@@ -15,6 +15,8 @@ Build and run docker containers:
 
 `docker-compose up --build -d`
 
+The Django application will be available on http://localhost:1337
+
 Collect Django static files to static root folder and apply Django migration files:
 
 `docker-compose run xrpl-django bash -c "python manage.py collectstatic && python manage.py migrate"`
