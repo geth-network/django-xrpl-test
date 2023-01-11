@@ -273,28 +273,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedXRPLAccountList'
           description: ''
-  /api/xrpl-accounts/{hash}/:
-    get:
-      operationId: Get XRPL account by account id
-      parameters:
-      - in: path
-        name: hash
-        schema:
-          type: string
-        description: A unique value identifying this XRPL Account.
-        required: true
-      tags:
-      - xrpl-accounts
-      security:
-      - cookieAuth: []
-      - basicAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/XRPLAccount'
-          description: ''
 components:
   schemas:
     AssetInfo:

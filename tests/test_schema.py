@@ -26,15 +26,6 @@ def test_get_xrpl_accounts(client, transaction, schema_tester):
 
 
 @pytest.mark.django_db
-def test_detail_xrpl_account(client, transaction, schema_tester):
-    response = client.get(
-        reverse("xrplaccount-detail", args=[transaction.account_id]),
-        HTTP_HOST="localhost:8001",
-    )
-    schema_tester.validate_response(response)
-
-
-@pytest.mark.django_db
 def test_get_xrpl_accounts(client, transaction, schema_tester):
     response = client.get(reverse("xrplaccount-list"),
                           HTTP_HOST="localhost:8001")

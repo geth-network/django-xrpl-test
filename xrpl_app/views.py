@@ -20,8 +20,7 @@ from xrpl_app.serializers import ListPaymentSerializer, \
 logger = logging.getLogger(__name__)
 
 
-class AccountsViewSet(RetrieveModelMixin,
-                      ListModelMixin,
+class AccountsViewSet(ListModelMixin,
                       GenericViewSet):
     queryset = XRPLAccount.objects.all()
     serializer_class = XRPLAccountSerializer
