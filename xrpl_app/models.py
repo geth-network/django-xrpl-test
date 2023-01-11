@@ -26,6 +26,9 @@ class Currency(models.Model):
     # https://xrpl.org/currency-formats.html#nonstandard-currency-codes
     name = models.CharField(max_length=40, primary_key=True)
 
+    def __str__(self):
+        return self.name
+
     @staticmethod
     def get_default_currency():
         obj, _ = Currency.objects.get_or_create(name=settings.DEFAULT_XRPL_ASSET)
