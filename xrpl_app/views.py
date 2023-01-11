@@ -7,6 +7,7 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.mixins import RetrieveModelMixin, CreateModelMixin, \
     ListModelMixin
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import GenericViewSet
 from xrpl.account import get_account_transactions
 from xrpl.clients import JsonRpcClient
@@ -49,6 +50,7 @@ class PaymentsViewSet(RetrieveModelMixin,
         "asset_info__issuer", "asset_info__currency",
     )
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    permission_classes = (AllowAny, )
     search_fields = ("account__hash", "destination__hash", "hash")
     ordering_fields = ("ledger_idx",)
     filterset_fields = "__all__"
@@ -82,22 +84,6 @@ class PaymentsViewSet(RetrieveModelMixin,
             payments[tx["hash"]] = tx
         return payments
 
-    @staticmethod
-    def get_payments_accounts(payments: dict, exists_payments: set):
-        accounts = set()
-        for trans_hash in payments:
-            if trans_hash in exists_payments:
-                del payments[trans_hash]
-                continue
-            payment = payments[trans_hash]
-            accounts.add(payment["Account"])
-            accounts.add(payment["Destination"])
-            accounts.add(payment["Account"])
-            amount = payment["Amount"]
-            if isinstance(amount, dict):
-                accounts.add(amount["issuer"])
-        return accounts, payments
-
     def save_data(self, transactions: list) -> list:
         result = []
         payments = self.filter_payments(transactions)
@@ -106,29 +92,18 @@ class PaymentsViewSet(RetrieveModelMixin,
             set(PaymentTransaction.objects.filter(hash__in=payments).
                 values_list('hash', flat=True))
         )
-        payments_accounts, target_payments = self.get_payments_accounts(
-            payments, exists_payments
-        )
-        exists_accounts = (
-            XRPLAccount.objects.filter(hash__in=payments_accounts)
-        )
-        inmemory_accounts = {elem.pk: elem for elem in exists_accounts}
-        for payment in target_payments:
-            payment = self.db_transaction(target_payments[payment],
-                                          inmemory_accounts)
-            result.append(payment)
+        for trans_hash in payments:
+            if trans_hash in exists_payments:
+                continue
+            payment = payments[trans_hash]
+            obj_payment = self.db_transaction(payment)
+            result.append(obj_payment)
         return result
 
     @transaction.atomic
-    def db_transaction(self, data: dict, accounts: dict):
-        source = accounts.get(data["Account"])
-        if not source:
-            source = XRPLAccount.objects.create(hash=data["Account"])
-            accounts[data["Account"]] = source
-        dest = accounts.get(data["Destination"])
-        if not dest:
-            dest = XRPLAccount.objects.create(hash=data["Destination"])
-            accounts[data["Destination"]] = dest
+    def db_transaction(self, data: dict):
+        source, _ = XRPLAccount.objects.get_or_create(hash=data["Account"])
+        dest, _ = XRPLAccount.objects.get_or_create(hash=data["Destination"])
         insert_data = {
             "account": source,
             "destination": dest,
@@ -144,12 +119,8 @@ class PaymentsViewSet(RetrieveModelMixin,
             insert_data["asset_info"] = app_conf.default_asset
         elif isinstance(amount, dict):
             insert_data["amount"] = amount["value"]
-            issuer = accounts.get(amount["issuer"])
-            if not issuer:
-                issuer = XRPLAccount.objects.create(hash=amount["issuer"])
-                accounts[amount["issuer"]] = issuer
-            currency, _ = Currency.objects.get_or_create(
-                name=amount["currency"])
+            issuer, _ = XRPLAccount.objects.get_or_create(hash=amount["issuer"])
+            currency, _ = Currency.objects.get_or_create(name=amount["currency"])
             asset, _ = AssetInfo.objects.get_or_create(issuer=issuer,
                                                        currency=currency)
             insert_data["asset_info"] = asset
