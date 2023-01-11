@@ -26,6 +26,10 @@ class Currency(models.Model):
     # https://xrpl.org/currency-formats.html#nonstandard-currency-codes
     name = models.CharField(max_length=40, primary_key=True)
 
+    class Meta:
+        verbose_name_plural = "Currencies"
+        verbose_name = "Currency"
+
     def __str__(self):
         return self.name
 
