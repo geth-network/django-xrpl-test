@@ -1,7 +1,7 @@
 import logging
 
-from django.apps import apps
 from django.db import transaction
+from django.core.cache import cache
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.mixins import RetrieveModelMixin, CreateModelMixin, \
@@ -115,8 +115,10 @@ class PaymentsViewSet(RetrieveModelMixin,
         amount = data["Amount"]
         if isinstance(amount, str):
             insert_data["amount"] = amount
-            app_conf = apps.get_app_config("xrpl_app")
-            insert_data["asset_info"] = app_conf.default_asset
+            default_asset = cache.get_or_set(
+                "asset", AssetInfo.get_default_asset(), timeout=60*60
+            )
+            insert_data["asset_info"] = default_asset
         elif isinstance(amount, dict):
             insert_data["amount"] = amount["value"]
             issuer, _ = XRPLAccount.objects.get_or_create(hash=amount["issuer"])
