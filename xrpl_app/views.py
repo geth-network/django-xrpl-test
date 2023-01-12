@@ -11,11 +11,13 @@ from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import GenericViewSet
 from xrpl.account import get_account_transactions
 from xrpl.clients import JsonRpcClient
+from httpx import NetworkError, TimeoutException
 
 from xrpl_app.filters import PaymentsFilter, AccountsFilter, AssetsFilter
 from xrpl_app.models import PaymentTransaction, XRPLAccount, AssetInfo, Currency
 from xrpl_app.serializers import ListPaymentSerializer, \
     RequestLastPaymentsSerializer, XRPLAccountSerializer, AssetInfoSerializer
+from xrpl_app.exceptions import XRPLServiceUnavailable
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +68,11 @@ class PaymentsViewSet(RetrieveModelMixin,
         serializer.is_valid(raise_exception=True)
         data = serializer.data
         client = JsonRpcClient(data["url"])
-        transactions = get_account_transactions(data["account"], client)
+        try:
+            transactions = get_account_transactions(data["account"], client)
+        except (TimeoutException, NetworkError) as err:
+            logger.exception("XRPL request error")
+            raise XRPLServiceUnavailable()
         objects = self.save_data(transactions)
         result = ListPaymentSerializer(instance=objects, many=True).data
         return Response(result, status=201)
