@@ -1,3 +1,5 @@
+from functools import cache
+
 from django.conf import settings
 from django.contrib import admin
 from django.db import models
@@ -17,8 +19,11 @@ class XRPLAccount(models.Model):
         return self.hash
 
     @staticmethod
+    @cache
     def get_default_account():
-        obj, _ = XRPLAccount.objects.get_or_create(hash=settings.DEFAULT_XRPL_ACCOUNT)
+        obj, _ = XRPLAccount.objects.get_or_create(
+            hash=settings.DEFAULT_XRPL_ACCOUNT
+        )
         return obj
 
 
@@ -34,6 +39,7 @@ class Currency(models.Model):
         return self.name
 
     @staticmethod
+    @cache
     def get_default_currency():
         obj, _ = Currency.objects.get_or_create(name=settings.DEFAULT_XRPL_ASSET)
         return obj
@@ -46,13 +52,14 @@ class AssetInfo(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["issuer", "currency"], name="unique_asset_issuer_currency"
+                fields=["issuer", "currency"], name="unique_issuer_currency"
             )
         ]
         verbose_name_plural = "Assets Info"
         verbose_name = "Asset Info"
 
     @staticmethod
+    @cache
     def get_default_asset():
         obj, _ = AssetInfo.objects.get_or_create(
             issuer=XRPLAccount.get_default_account(),
