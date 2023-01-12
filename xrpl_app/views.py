@@ -120,9 +120,10 @@ class PaymentsViewSet(RetrieveModelMixin,
         amount = data["Amount"]
         if isinstance(amount, str):
             insert_data["amount"] = amount
-            default_asset = cache.get_or_set(
-                "asset", AssetInfo.get_default_asset(), timeout=60*60
-            )
+            default_asset = cache.get("asset")
+            if not default_asset:
+                default_asset = AssetInfo.get_default_asset()
+                cache.set("asset", default_asset)
             insert_data["asset_info"] = default_asset
         elif isinstance(amount, dict):
             insert_data["amount"] = amount["value"]
