@@ -1,8 +1,6 @@
 import logging
 
 from django.db import transaction
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework import mixins
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
@@ -85,7 +83,7 @@ class PaymentsViewSet(mixins.RetrieveModelMixin,
             set(models.PaymentTransaction.objects.filter(hash__in=payments).
                 values_list('hash', flat=True))
         )
-        target_data, acc_hashes = list(), set()
+        target_data, acc_hashes = [], set()
         for payment_hash, payment in payments.items():
             if payment_hash in exists_payments:
                 continue
@@ -105,15 +103,17 @@ class PaymentsViewSet(mixins.RetrieveModelMixin,
         for acc in new_accounts:
             exists_accounts[acc.hash] = acc
         insert_data = []
+        assets = {}
         for payment in target_data:
-            insert_obj = self.prepare_payment_query(payment, exists_accounts)
+            insert_obj = self.prepare_payment_query(payment, assets,
+                                                    exists_accounts)
             insert_data.append(insert_obj)
         obj = models.PaymentTransaction.objects.bulk_create(insert_data)
         result.extend(obj)
         return result
 
     @staticmethod
-    def prepare_payment_query(data: dict, accounts):
+    def prepare_payment_query(data: dict, assets: dict, accounts: dict):
         source = accounts.get(data["Account"])
         if not source:
             source = models.XRPLAccount.objects.create(hash=data["Account"])
@@ -126,18 +126,21 @@ class PaymentsViewSet(mixins.RetrieveModelMixin,
         if isinstance(amount, str):
             asset = models.AssetInfo.get_default_asset()
         elif isinstance(amount, dict):
-            amount = amount["value"]
             issuer = accounts.get(amount["issuer"])
             if not issuer:
                 issuer = models.XRPLAccount.objects.create(hash=amount["issuer"])
                 accounts[issuer.hash] = issuer
-            asset, _ = models.AssetInfo.objects.get_or_create(
-                issuer=issuer, currency=amount["currency"]
-            )
+            asset_key = (amount["issuer"], amount["currency"])
+            asset = assets.get(asset_key)
+            if not asset:
+                asset, _ = models.AssetInfo.objects.get_or_create(
+                    issuer=issuer, currency=amount["currency"]
+                )
+                assets[asset_key] = asset
         else:
             raise ValueError(f"Invalid amount format: {type(amount).__name__}")
         obj = models.PaymentTransaction(
-            account=source, destination=dest, ledger_idx=data["ledger_idx"],
+            account=source, destination=dest, ledger_idx=data["ledger_index"],
             destination_tag=data.get("DestinationTag"),
             hash=data["hash"], fee=data["Fee"], asset_info=asset
         )
