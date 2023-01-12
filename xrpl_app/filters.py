@@ -7,14 +7,12 @@ class AssetsFilter(FilterSet):
     issuer = CharFilter(field_name="issuer__hash", lookup_expr="exact")
     issuer__contains = CharFilter(field_name="issuer__hash",
                                   lookup_expr="contains")
-    currency = CharFilter(field_name="currency",
-                          lookup_expr="exact")
-    currency__contains = CharFilter(field_name="currency__name",
-                                    lookup_expr="contains")
 
     class Meta:
         model = AssetInfo
-        fields = "__all__"
+        fields = {
+            "currency": ["exact", "contains"],
+        }
 
 
 class AccountsFilter(FilterSet):
@@ -36,9 +34,9 @@ class PaymentsFilter(FilterSet):
     issuer__contains = CharFilter(
         field_name="asset_info__issuer__hash", lookup_expr="contains"
     )
-    currency = CharFilter(field_name="asset_info__currency__name", lookup_expr="exact")
+    currency = CharFilter(field_name="asset_info__currency", lookup_expr="exact")
     currency__contains = CharFilter(
-        field_name="asset_info__currency__name", lookup_expr="contains"
+        field_name="asset_info__currency", lookup_expr="contains"
     )
     destination_tag = NumberFilter(field_name="destination_tag", lookup_expr="exact")
     destination_tag__isnull = BooleanFilter(
@@ -48,8 +46,6 @@ class PaymentsFilter(FilterSet):
     class Meta:
         model = PaymentTransaction
         fields = {
-            "ledger_idx": ["exact", "lt", "gt", "lte", "gte"],
-            "destination_tag": ["exact"],
+            "ledger_idx": ["exact"],
             "hash": ["exact", "contains"],
-            "amount": ["exact"],
         }

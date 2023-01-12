@@ -37,12 +37,6 @@ paths:
         description: The initial index from which to return the results.
         schema:
           type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
       tags:
       - assets
       security:
@@ -67,11 +61,6 @@ paths:
       - in: query
         name: account__contains
         description: Case-sensitive containment match
-        schema:
-          type: string
-      - in: query
-        name: amount
-        description: Exact match by value of payment transaction
         schema:
           type: string
       - in: query
@@ -127,26 +116,6 @@ paths:
         description: Exact match by ledger index
         schema:
           type: integer
-      - in: query
-        name: ledger_idx__gt
-        description: Greater than
-        schema:
-          type: integer
-      - in: query
-        name: ledger_idx__gte
-        description: Greater than or equal to
-        schema:
-          type: integer
-      - in: query
-        name: ledger_idx__lt
-        description: Less than
-        schema:
-          type: integer
-      - in: query
-        name: ledger_idx__lte
-        description: Less than or equal to
-        schema:
-          type: integer
       - name: limit
         required: false
         in: query
@@ -163,12 +132,6 @@ paths:
         required: false
         in: query
         description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
         schema:
           type: string
       tags:
@@ -255,12 +218,6 @@ paths:
         description: The initial index from which to return the results.
         schema:
           type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
       tags:
       - xrpl-accounts
       security:
@@ -292,14 +249,6 @@ components:
       required:
       - currency
       - issuer
-    Currency:
-      type: object
-      properties:
-        name:
-          type: string
-          readOnly: true
-      required:
-      - name
     ListPayment:
       type: object
       properties:

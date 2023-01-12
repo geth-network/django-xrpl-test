@@ -27,7 +27,6 @@ class XRPLAccount(models.Model):
         return obj
 
 
-
 class AssetInfo(models.Model):
     issuer = models.ForeignKey(XRPLAccount, on_delete=models.CASCADE)
     # https://xrpl.org/currency-formats.html#nonstandard-currency-codes

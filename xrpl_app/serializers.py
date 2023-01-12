@@ -1,8 +1,7 @@
 from collections import OrderedDict
 
 from rest_framework import serializers
-from xrpl_app.models import (AssetInfo, Currency, PaymentTransaction,
-                             XRPLAccount)
+from xrpl_app import models
 
 
 class RequestLastPaymentsSerializer(serializers.Serializer):
@@ -10,34 +9,20 @@ class RequestLastPaymentsSerializer(serializers.Serializer):
     account = serializers.CharField(max_length=35)
 
 
-class CurrencySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Currency
-        fields = ("name", )
-        read_only_fields = fields
-
-    def to_representation(self, instance):
-        return instance.name
-
-
 class XRPLAccountSerializer(serializers.ModelSerializer):
     hash = serializers.CharField(max_length=35)
 
     class Meta:
-        model = XRPLAccount
+        model = models.XRPLAccount
         fields = "__all__"
         read_only_fields = ("hash", )
-
-    # def to_representation(self, instance):
-    #     return instance.hash
 
 
 class AssetInfoSerializer(serializers.ModelSerializer):
     issuer = XRPLAccountSerializer()
-    currency = CurrencySerializer()
 
     class Meta:
-        model = AssetInfo
+        model = models.AssetInfo
         fields = ("issuer", "currency")
         read_only_fields = fields
 
@@ -53,7 +38,7 @@ class ListPaymentSerializer(serializers.ModelSerializer):
     asset_info = AssetInfoSerializer()
 
     class Meta:
-        model = PaymentTransaction
+        model = models.PaymentTransaction
         fields = "__all__"
         read_only_fields = ("account", "destination", "asset_info", "ledger_idx",
                             "destination_tag", "hash", "amount", "fee")
@@ -64,6 +49,6 @@ class ListPaymentSerializer(serializers.ModelSerializer):
         ret["destination"] = instance.destination_id
         ret["asset_info"] = OrderedDict(
             issuer=instance.asset_info.issuer_id,
-            currency=instance.asset_info.currency_id
+            currency=instance.asset_info.currency
         )
         return ret

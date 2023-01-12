@@ -23,9 +23,6 @@ class AccountsViewSet(mixins.ListModelMixin,
                       GenericViewSet):
     queryset = models.XRPLAccount.objects.all()
     serializer_class = serializers.XRPLAccountSerializer
-    filter_backends = (DjangoFilterBackend, SearchFilter)
-    search_fields = ("hash",)
-    filterset_fields = "__all__"
     filterset_class = filters.AccountsFilter
 
 
@@ -33,9 +30,6 @@ class AssetsInfoViewSet(mixins.ListModelMixin,
                         GenericViewSet):
     queryset = models.AssetInfo.objects.select_related("issuer")
     serializer_class = serializers.AssetInfoSerializer
-    filter_backends = (DjangoFilterBackend, SearchFilter)
-    search_fields = ("issuer__hash", "currency__name")
-    filterset_fields = "__all__"
     filterset_class = filters.AssetsFilter
 
 
@@ -47,11 +41,7 @@ class PaymentsViewSet(mixins.RetrieveModelMixin,
         "account", "destination", "asset_info",
         "asset_info__issuer"
     )
-    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     permission_classes = (AllowAny, )
-    search_fields = ("account__hash", "destination__hash", "hash")
-    ordering_fields = ("ledger_idx",)
-    filterset_fields = "__all__"
     filterset_class = filters.PaymentsFilter
 
     def get_serializer_class(self):
