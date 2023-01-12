@@ -97,16 +97,19 @@ class PaymentsViewSet(RetrieveModelMixin,
             set(PaymentTransaction.objects.filter(hash__in=payments).
                 values_list('hash', flat=True))
         )
-        for trans_hash in payments:
-            if trans_hash in exists_payments:
-                continue
-            payment = payments[trans_hash]
-            obj_payment = self.db_transaction(payment)
-            result.append(obj_payment)
+        with transaction.atomic():
+            insert_data = []
+            for trans_hash in payments:
+                if trans_hash in exists_payments:
+                    continue
+                payment = payments[trans_hash]
+                insert_obj = self.prepare_payment_query(payment)
+                insert_data.append(insert_obj)
+            obj = PaymentTransaction.objects.bulk_create(insert_data)
+            result.extend(obj)
         return result
 
-    @transaction.atomic
-    def db_transaction(self, data: dict):
+    def prepare_payment_query(self, data: dict):
         source, _ = XRPLAccount.objects.get_or_create(hash=data["Account"])
         dest, _ = XRPLAccount.objects.get_or_create(hash=data["Destination"])
         insert_data = {
@@ -135,5 +138,5 @@ class PaymentsViewSet(RetrieveModelMixin,
 
         else:
             raise ValueError(f"Invalid amount format: {type(amount).__name__}")
-        obj = self.get_queryset().create(**insert_data)
+        obj = PaymentTransaction(**insert_data)
         return obj
