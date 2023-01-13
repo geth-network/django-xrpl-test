@@ -15,8 +15,7 @@ Including another URLconf
 """
 from rest_framework import routers
 
-from xrpl_app.views import PaymentsViewSet, AccountsViewSet, AssetsInfoViewSet
-
+from xrpl_app.views import AccountsViewSet, AssetsInfoViewSet, PaymentsViewSet
 
 router = routers.SimpleRouter()
 router.register(r'payments', PaymentsViewSet)

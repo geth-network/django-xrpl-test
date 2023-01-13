@@ -1,7 +1,8 @@
+from urllib.parse import urlencode
 from uuid import uuid4
+
 import pytest
 from django.urls import reverse
-from urllib.parse import urlencode
 
 
 @pytest.mark.django_db

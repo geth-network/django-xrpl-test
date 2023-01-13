@@ -5,8 +5,8 @@ from typing import Dict, Tuple
 from django.db.models import QuerySet
 
 from xrpl_app.models import AssetInfo, PaymentTransaction, XRPLAccount
-from .data import XRPTransaction, Amount
 
+from .data import Amount, XRPTransaction
 
 logger = logging.getLogger(__name__)
 

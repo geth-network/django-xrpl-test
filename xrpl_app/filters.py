@@ -1,6 +1,6 @@
 from django_filters import BooleanFilter, CharFilter, FilterSet, NumberFilter
 
-from xrpl_app.models import PaymentTransaction, XRPLAccount, AssetInfo
+from xrpl_app.models import AssetInfo, PaymentTransaction, XRPLAccount
 
 
 class AssetsFilter(FilterSet):

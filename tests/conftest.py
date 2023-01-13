@@ -3,7 +3,7 @@ from django.conf import settings
 from django.core.management import call_command
 from openapi_tester.schema_tester import SchemaTester
 
-from xrpl_app.models import PaymentTransaction, XRPLAccount, AssetInfo
+from xrpl_app.models import AssetInfo, PaymentTransaction, XRPLAccount
 
 
 @pytest.fixture
