@@ -19,7 +19,7 @@ class AccountsQuery:
 
     def setup_cache(self, accounts: set) -> None:
         """
-        Select already exist accounts and create new accounts
+        Select already exist accounts, create new accounts and put them into cache
         Args:
             accounts: all accounts hashes from successful payments
 
@@ -42,10 +42,6 @@ class AccountsQuery:
             source = self.model.objects.create(hash=item)
             self.cache[item] = source
         return obj
-
-    def update_accounts(self, accounts: QuerySet[XRPLAccount]) -> None:
-        accounts_data = {obj.hash: obj for obj in accounts}
-        self.cache.update(accounts_data)
 
 
 class AssetsQuery:

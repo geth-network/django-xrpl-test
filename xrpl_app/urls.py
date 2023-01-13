@@ -24,4 +24,3 @@ router.register(r'xrpl-accounts', AccountsViewSet)
 router.register(r'assets', AssetsInfoViewSet)
 
 urlpatterns = router.urls
-print("")
