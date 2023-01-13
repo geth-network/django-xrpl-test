@@ -75,4 +75,3 @@ class XRPTransaction(BaseModel):
             return self.tx.Amount.value
         else:
             return self.tx.Amount
-

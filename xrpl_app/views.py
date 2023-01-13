@@ -15,32 +15,31 @@ from xrpl_app.payments import PaymentsQuery
 logger = logging.getLogger(__name__)
 
 
-class AccountsViewSet(mixins.ListModelMixin,
-                      viewsets.GenericViewSet):
+class AccountsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = models.XRPLAccount.objects.all()
     serializer_class = serializers.XRPLAccountSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = filters.AccountsFilter
 
 
-class AssetsInfoViewSet(mixins.ListModelMixin,
-                        viewsets.GenericViewSet):
+class AssetsInfoViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = models.AssetInfo.objects.select_related("issuer")
     serializer_class = serializers.AssetInfoSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = filters.AssetsFilter
 
 
-class PaymentsViewSet(mixins.RetrieveModelMixin,
-                      mixins.CreateModelMixin,
-                      mixins.ListModelMixin,
-                      viewsets.GenericViewSet):
+class PaymentsViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
     queryset = models.PaymentTransaction.objects.select_related(
-        "account", "destination", "asset_info",
-        "asset_info__issuer"
+        "account", "destination", "asset_info", "asset_info__issuer"
     )
     filter_backends = (DjangoFilterBackend,)
-    permission_classes = (permissions.AllowAny, )
+    permission_classes = (permissions.AllowAny,)
     filterset_class = filters.PaymentsFilter
 
     def get_serializer_class(self):

@@ -23,7 +23,6 @@ urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
     path("api/", include("xrpl_app.urls")),
     path("healthcheck/", lambda req: HttpResponse(), name="healthcheck"),
-
 ]
 
 if settings.DEBUG:

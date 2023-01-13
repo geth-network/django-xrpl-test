@@ -16,7 +16,7 @@ class XRPLAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.XRPLAccount
         fields = "__all__"
-        read_only_fields = ("hash", )
+        read_only_fields = ("hash",)
 
 
 class AssetInfoSerializer(serializers.ModelSerializer):
@@ -41,15 +41,22 @@ class ListPaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.PaymentTransaction
         fields = "__all__"
-        read_only_fields = ("account", "destination", "asset_info", "ledger_idx",
-                            "destination_tag", "hash", "amount", "fee")
+        read_only_fields = (
+            "account",
+            "destination",
+            "asset_info",
+            "ledger_idx",
+            "destination_tag",
+            "hash",
+            "amount",
+            "fee",
+        )
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
         ret["account"] = instance.account_id
         ret["destination"] = instance.destination_id
         ret["asset_info"] = OrderedDict(
-            issuer=instance.asset_info.issuer_id,
-            currency=instance.asset_info.currency
+            issuer=instance.asset_info.issuer_id, currency=instance.asset_info.currency
         )
         return ret

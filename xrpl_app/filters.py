@@ -5,8 +5,7 @@ from xrpl_app.models import AssetInfo, PaymentTransaction, XRPLAccount
 
 class AssetsFilter(FilterSet):
     issuer = CharFilter(field_name="issuer__hash", lookup_expr="exact")
-    issuer__contains = CharFilter(field_name="issuer__hash",
-                                  lookup_expr="contains")
+    issuer__contains = CharFilter(field_name="issuer__hash", lookup_expr="contains")
 
     class Meta:
         model = AssetInfo

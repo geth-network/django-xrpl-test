@@ -18,8 +18,8 @@ from rest_framework import routers
 from xrpl_app.views import AccountsViewSet, AssetsInfoViewSet, PaymentsViewSet
 
 router = routers.SimpleRouter()
-router.register(r'payments', PaymentsViewSet)
-router.register(r'xrpl-accounts', AccountsViewSet)
-router.register(r'assets', AssetsInfoViewSet)
+router.register(r"payments", PaymentsViewSet)
+router.register(r"xrpl-accounts", AccountsViewSet)
+router.register(r"assets", AssetsInfoViewSet)
 
 urlpatterns = router.urls

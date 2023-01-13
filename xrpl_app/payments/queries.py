@@ -49,9 +49,7 @@ class AssetsQuery:
 
     @lru_cache
     def get_asset_info(self, issuer: str | QuerySet[XRPLAccount], currency: str):
-        obj, _ = self.model.objects.get_or_create(
-            issuer=issuer, currency=currency
-        )
+        obj, _ = self.model.objects.get_or_create(issuer=issuer, currency=currency)
         return obj
 
     @lru_cache
@@ -61,7 +59,6 @@ class AssetsQuery:
 
 
 class PaymentsQuery:
-
     def __init__(self, src: str):
         self.account_id = src
         self.accounts = AccountsQuery()
@@ -80,9 +77,10 @@ class PaymentsQuery:
             list: target payments
 
         """
-        exists_payments = (
-            set(PaymentTransaction.objects.filter(hash__in=payments).
-                values_list('hash', flat=True))
+        exists_payments = set(
+            PaymentTransaction.objects.filter(hash__in=payments).values_list(
+                "hash", flat=True
+            )
         )
         target_data, acc_hashes = [], set()
         for payment_hash, payment in payments.items():
@@ -107,8 +105,10 @@ class PaymentsQuery:
         """
         payments = self.filter_input_data(transactions)
         acc_hashes, target_data = self.parse_payments(payments)
-        logger.info(f"Found {len(payments)} payments of {self.account_id}. "
-                    f"{len(target_data)} entries will be stored to DB.")
+        logger.info(
+            f"Found {len(payments)} payments of {self.account_id}. "
+            f"{len(target_data)} entries will be stored to DB."
+        )
         self.accounts.setup_cache(acc_hashes)
         insert_data = []
         for payment in target_data:
@@ -143,11 +143,15 @@ class PaymentsQuery:
             asset = self.assets.get_default_asset()
         else:
             issuer = self.accounts.get_or_set(amount.issuer)
-            asset = self.assets.get_asset_info(issuer,
-                                               amount.currency)
+            asset = self.assets.get_asset_info(issuer, amount.currency)
         obj = PaymentTransaction(
-            account=source, destination=dest, ledger_idx=payment.ledger_index,
-            destination_tag=payment.destination_tag, amount=payment.amount_value,
-            hash=payment.hash, fee=payment.fee, asset_info=asset
+            account=source,
+            destination=dest,
+            ledger_idx=payment.ledger_index,
+            destination_tag=payment.destination_tag,
+            amount=payment.amount_value,
+            hash=payment.hash,
+            fee=payment.fee,
+            asset_info=asset,
         )
         return obj

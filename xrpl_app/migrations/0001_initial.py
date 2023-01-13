@@ -16,8 +16,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="AssetInfo",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('currency', models.CharField(default='XRP drops', max_length=40)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("currency", models.CharField(default="XRP drops", max_length=40)),
             ],
             options={
                 "verbose_name": "Asset Info",
@@ -25,39 +33,80 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='XRPLAccount',
+            name="XRPLAccount",
             fields=[
-                ('hash', models.CharField(max_length=35, primary_key=True, serialize=False)),
+                (
+                    "hash",
+                    models.CharField(max_length=35, primary_key=True, serialize=False),
+                ),
             ],
             options={
-                'verbose_name': 'XRPL Account',
-                'verbose_name_plural': 'XRPL Accounts',
+                "verbose_name": "XRPL Account",
+                "verbose_name_plural": "XRPL Accounts",
             },
         ),
         migrations.CreateModel(
             name="PaymentTransaction",
             fields=[
-                ('ledger_idx', models.PositiveBigIntegerField()),
-                ('destination_tag', models.PositiveBigIntegerField(null=True)),
-                ('hash', models.CharField(max_length=64, primary_key=True, serialize=False)),
-                ('amount', models.CharField(max_length=24, validators=[xrpl_app.validators.validate_numeric])),
-                ('fee', models.CharField(max_length=24, validators=[xrpl_app.validators.validate_numeric])),
-                ('account', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='account', to='xrpl_app.xrplaccount')),
-                ('asset_info', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='asset_info', to='xrpl_app.assetinfo')),
-                ('destination', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='destination', to='xrpl_app.xrplaccount')),
+                ("ledger_idx", models.PositiveBigIntegerField()),
+                ("destination_tag", models.PositiveBigIntegerField(null=True)),
+                (
+                    "hash",
+                    models.CharField(max_length=64, primary_key=True, serialize=False),
+                ),
+                (
+                    "amount",
+                    models.CharField(
+                        max_length=24, validators=[xrpl_app.validators.validate_numeric]
+                    ),
+                ),
+                (
+                    "fee",
+                    models.CharField(
+                        max_length=24, validators=[xrpl_app.validators.validate_numeric]
+                    ),
+                ),
+                (
+                    "account",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="account",
+                        to="xrpl_app.xrplaccount",
+                    ),
+                ),
+                (
+                    "asset_info",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="asset_info",
+                        to="xrpl_app.assetinfo",
+                    ),
+                ),
+                (
+                    "destination",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="destination",
+                        to="xrpl_app.xrplaccount",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Payment Transaction',
-                'verbose_name_plural': 'Payment Transactions',
+                "verbose_name": "Payment Transaction",
+                "verbose_name_plural": "Payment Transactions",
             },
         ),
         migrations.AddField(
-            model_name='assetinfo',
-            name='issuer',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='xrpl_app.xrplaccount'),
+            model_name="assetinfo",
+            name="issuer",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="xrpl_app.xrplaccount"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='assetinfo',
-            constraint=models.UniqueConstraint(fields=('issuer', 'currency'), name='unique_issuer_currency'),
+            model_name="assetinfo",
+            constraint=models.UniqueConstraint(
+                fields=("issuer", "currency"), name="unique_issuer_currency"
+            ),
         ),
     ]
