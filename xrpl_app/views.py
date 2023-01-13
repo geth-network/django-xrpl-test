@@ -1,6 +1,7 @@
 import logging
 
 from django.db import transaction
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins
 from rest_framework.response import Response
 from rest_framework import permissions, viewsets
@@ -20,6 +21,7 @@ class AccountsViewSet(mixins.ListModelMixin,
                       viewsets.GenericViewSet):
     queryset = models.XRPLAccount.objects.all()
     serializer_class = serializers.XRPLAccountSerializer
+    filter_backends = (DjangoFilterBackend,)
     filterset_class = filters.AccountsFilter
 
 
@@ -27,6 +29,7 @@ class AssetsInfoViewSet(mixins.ListModelMixin,
                         viewsets.GenericViewSet):
     queryset = models.AssetInfo.objects.select_related("issuer")
     serializer_class = serializers.AssetInfoSerializer
+    filter_backends = (DjangoFilterBackend,)
     filterset_class = filters.AssetsFilter
 
 
@@ -38,6 +41,7 @@ class PaymentsViewSet(mixins.RetrieveModelMixin,
         "account", "destination", "asset_info",
         "asset_info__issuer"
     )
+    filter_backends = (DjangoFilterBackend,)
     permission_classes = (permissions.AllowAny, )
     filterset_class = filters.PaymentsFilter
 
