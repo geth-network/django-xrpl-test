@@ -1,1 +1,1 @@
-from .queries import PaymentsQuery
+from .queries import PaymentsQuery  # noqa: F401

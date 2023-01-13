@@ -61,7 +61,8 @@ def test_get_assets_currency_exact_empty(client, transaction, schema_tester):
 
 
 @pytest.mark.django_db
-def test_get_assets_currency_contains_match(client, transaction, schema_tester):
+def test_get_assets_currency_contains_match(client, transaction,
+                                            schema_tester):
     partial_id = transaction.asset_info.currency[:-1]
     url = reverse("assetinfo-list")
     url += f"?{urlencode({'currency__contains': partial_id})}"
@@ -71,7 +72,8 @@ def test_get_assets_currency_contains_match(client, transaction, schema_tester):
 
 
 @pytest.mark.django_db
-def test_get_assets_currency_contains_empty(client, transaction, schema_tester):
+def test_get_assets_currency_contains_empty(client, transaction,
+                                            schema_tester):
     url = reverse("assetinfo-list")
     url += f"?{urlencode({'currency__contains': uuid4().hex})}"
     response = client.get(url, HTTP_HOST="localhost:8001")

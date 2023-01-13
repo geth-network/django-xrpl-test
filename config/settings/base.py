@@ -1,4 +1,3 @@
-from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -162,4 +161,5 @@ API_SCHEMA_FILEPATH = env.str(
     "API_SCHEMA_FILEPATH", default="config/schemas/api_v1.yml"
 )
 
-DB_DATA_FIXTURE = env.str("DB_DATA_FIXTURE", default="tests/fixtures/db_dump.json")
+DB_DATA_FIXTURE = env.str("DB_DATA_FIXTURE",
+                          default="tests/fixtures/db_dump.json")

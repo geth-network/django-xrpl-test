@@ -19,7 +19,8 @@ class AccountsQuery:
 
     def setup_cache(self, accounts: set) -> None:
         """
-        Select already exist accounts, create new accounts and put them into cache
+        Select already exist accounts, create new accountsand put them
+        into cache.
         Args:
             accounts: all accounts hashes from successful payments
 
@@ -48,8 +49,10 @@ class AssetsQuery:
     model = AssetInfo
 
     @lru_cache
-    def get_asset_info(self, issuer: str | QuerySet[XRPLAccount], currency: str):
-        obj, _ = self.model.objects.get_or_create(issuer=issuer, currency=currency)
+    def get_asset_info(self, issuer: str | QuerySet[XRPLAccount],
+                       currency: str):
+        obj, _ = self.model.objects.get_or_create(issuer=issuer,
+                                                  currency=currency)
         return obj
 
     @lru_cache
@@ -130,7 +133,8 @@ class PaymentsQuery:
         payments = {}
         for elem in transactions:
             elem = XRPTransaction(**elem)
-            if not (elem.is_successful and elem.is_validated and elem.is_it_payment):
+            if not (elem.is_successful and elem.is_validated
+                    and elem.is_it_payment):
                 continue
             payments[elem.hash] = elem
         return payments

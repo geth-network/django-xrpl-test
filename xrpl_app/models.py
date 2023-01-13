@@ -18,14 +18,17 @@ class XRPLAccount(models.Model):
 
     @staticmethod
     def get_default_account():
-        obj, _ = XRPLAccount.objects.get_or_create(hash=settings.DEFAULT_XRPL_ACCOUNT)
+        obj, _ = XRPLAccount.objects.get_or_create(
+            hash=settings.DEFAULT_XRPL_ACCOUNT
+        )
         return obj
 
 
 class AssetInfo(models.Model):
     issuer = models.ForeignKey(XRPLAccount, on_delete=models.CASCADE)
     # https://xrpl.org/currency-formats.html#nonstandard-currency-codes
-    currency = models.CharField(max_length=40, default=settings.DEFAULT_XRPL_ASSET)
+    currency = models.CharField(max_length=40,
+                                default=settings.DEFAULT_XRPL_ASSET)
 
     class Meta:
         constraints = [

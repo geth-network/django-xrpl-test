@@ -55,7 +55,7 @@ class PaymentsViewSet(
         client = JsonRpcClient(data["url"])
         try:
             trans_data = get_account_transactions(data["account"], client)
-        except (TimeoutException, NetworkError) as err:
+        except (TimeoutException, NetworkError):
             logger.exception("XRPL request error")
             raise XRPLServiceUnavailable()
         with transaction.atomic():

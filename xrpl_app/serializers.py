@@ -57,6 +57,7 @@ class ListPaymentSerializer(serializers.ModelSerializer):
         ret["account"] = instance.account_id
         ret["destination"] = instance.destination_id
         ret["asset_info"] = OrderedDict(
-            issuer=instance.asset_info.issuer_id, currency=instance.asset_info.currency
+            issuer=instance.asset_info.issuer_id,
+            currency=instance.asset_info.currency
         )
         return ret

@@ -36,7 +36,7 @@ def transaction(django_db_setup, django_db_blocker):
         src2 = XRPLAccount.objects.create(hash="some-hash")
         dst2 = XRPLAccount.objects.create(hash="dest")
         asset2 = AssetInfo.objects.create(issuer=src2, currency="UAH")
-        obj2 = PaymentTransaction.objects.create(
+        PaymentTransaction.objects.create(
             account=src2,
             destination=dst2,
             asset_info=asset2,
