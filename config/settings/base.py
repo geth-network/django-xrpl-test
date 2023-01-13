@@ -1,4 +1,3 @@
-from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -20,13 +19,13 @@ USE_TZ = True
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env.str('POSTGRES_DB', 'xrpl'),
-        'USER': env.str('POSTGRES_USER', 'user'),
-        'PASSWORD': env.str('POSTGRES_PASSWORD', 'password'),
-        'HOST': env.str('POSTGRES_HOST', 'localhost'),
-        'PORT': ''
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env.str("POSTGRES_DB", "xrpl"),
+        "USER": env.str("POSTGRES_USER", "user"),
+        "PASSWORD": env.str("POSTGRES_PASSWORD", "password"),
+        "HOST": env.str("POSTGRES_HOST", "localhost"),
+        "PORT": "",
     }
 }
 # https://docs.djangoproject.com/en/4.1/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
@@ -162,6 +161,5 @@ API_SCHEMA_FILEPATH = env.str(
     "API_SCHEMA_FILEPATH", default="config/schemas/api_v1.yml"
 )
 
-DB_DATA_FIXTURE = env.str(
-    "DB_DATA_FIXTURE", default="tests/fixtures/db_dump.json"
-)
+DB_DATA_FIXTURE = env.str("DB_DATA_FIXTURE",
+                          default="tests/fixtures/db_dump.json")

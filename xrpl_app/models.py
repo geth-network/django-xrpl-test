@@ -18,35 +18,22 @@ class XRPLAccount(models.Model):
 
     @staticmethod
     def get_default_account():
-        obj, _ = XRPLAccount.objects.get_or_create(hash=settings.DEFAULT_XRPL_ACCOUNT)
-        return obj
-
-
-class Currency(models.Model):
-    # https://xrpl.org/currency-formats.html#nonstandard-currency-codes
-    name = models.CharField(max_length=40, primary_key=True)
-
-    class Meta:
-        verbose_name_plural = "Currencies"
-        verbose_name = "Currency"
-
-    def __str__(self):
-        return self.name
-
-    @staticmethod
-    def get_default_currency():
-        obj, _ = Currency.objects.get_or_create(name=settings.DEFAULT_XRPL_ASSET)
+        obj, _ = XRPLAccount.objects.get_or_create(
+            hash=settings.DEFAULT_XRPL_ACCOUNT
+        )
         return obj
 
 
 class AssetInfo(models.Model):
     issuer = models.ForeignKey(XRPLAccount, on_delete=models.CASCADE)
-    currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
+    # https://xrpl.org/currency-formats.html#nonstandard-currency-codes
+    currency = models.CharField(max_length=40,
+                                default=settings.DEFAULT_XRPL_ASSET)
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["issuer", "currency"], name="unique_asset_issuer_currency"
+                fields=["issuer", "currency"], name="unique_issuer_currency"
             )
         ]
         verbose_name_plural = "Assets Info"
@@ -56,7 +43,6 @@ class AssetInfo(models.Model):
     def get_default_asset():
         obj, _ = AssetInfo.objects.get_or_create(
             issuer=XRPLAccount.get_default_account(),
-            currency=Currency.get_default_currency()
         )
         return obj
 

@@ -1,18 +1,12 @@
 from django.contrib import admin
 
-from xrpl_app.models import AssetInfo, PaymentTransaction, XRPLAccount, Currency
+from xrpl_app.models import AssetInfo, PaymentTransaction, XRPLAccount
 
 
 @admin.register(AssetInfo)
 class AssetInfoAdmin(admin.ModelAdmin):
     list_display = ("issuer", "currency")
     search_fields = ("issuer", "currency")
-
-
-@admin.register(Currency)
-class CurrencyAdmin(admin.ModelAdmin):
-    list_display = ("name",)
-    search_fields = list_display
 
 
 @admin.register(XRPLAccount)
@@ -24,8 +18,13 @@ class XRPLAccountAdmin(admin.ModelAdmin):
 @admin.register(PaymentTransaction)
 class PaymentAdmin(admin.ModelAdmin):
     list_display = (
-        "transaction_hash", "ledger_idx", "account_hash",
-        "dest_hash", "destination_tag", "amount", "fee",
+        "transaction_hash",
+        "ledger_idx",
+        "account_hash",
+        "dest_hash",
+        "destination_tag",
+        "amount",
+        "fee",
     )
 
     ordering = ("ledger_idx",)

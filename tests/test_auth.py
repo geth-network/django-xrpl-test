@@ -4,8 +4,9 @@ from django.urls import reverse
 
 @pytest.mark.django_db
 def test_unauth_get_transactions(client, transaction):
-    response = client.get(reverse("paymenttransaction-list"),
-                          HTTP_HOST="localhost:8001")
+    response = client.get(
+        reverse("paymenttransaction-list"), HTTP_HOST="localhost:8001"
+    )
     assert response.status_code == 200
 
 

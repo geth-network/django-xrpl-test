@@ -5,6 +5,5 @@ def validate_numeric(val: str):
     try:
         float(val)
     except Exception:
-        raise ValidationError(
-            "Expected numeric string, but got invalid format instead"
-        )
+        raise ValidationError("Expected numeric string, but got invalid "
+                              "format instead")
