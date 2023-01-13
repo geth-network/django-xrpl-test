@@ -1,5 +1,3 @@
-from functools import cache
-
 from django.conf import settings
 from django.contrib import admin
 from django.db import models
@@ -19,7 +17,6 @@ class XRPLAccount(models.Model):
         return self.hash
 
     @staticmethod
-    @cache
     def get_default_account():
         obj, _ = XRPLAccount.objects.get_or_create(
             hash=settings.DEFAULT_XRPL_ACCOUNT
@@ -43,7 +40,6 @@ class AssetInfo(models.Model):
         verbose_name = "Asset Info"
 
     @staticmethod
-    @cache
     def get_default_asset():
         obj, _ = AssetInfo.objects.get_or_create(
             issuer=XRPLAccount.get_default_account(),
