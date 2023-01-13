@@ -62,7 +62,8 @@ class AssetsQuery:
 
 class PaymentsQuery:
 
-    def __init__(self):
+    def __init__(self, src: str):
+        self.account_id = src
         self.accounts = AccountsQuery()
         self.assets = AssetsQuery()
 
@@ -105,8 +106,9 @@ class PaymentsQuery:
             list: saved payments represented as a Django ORM objects
         """
         payments = self.filter_input_data(transactions)
-        logger.info(f"Found {len(payments)} payments")
         acc_hashes, target_data = self.parse_payments(payments)
+        logger.info(f"Found {len(payments)} payments of {self.account_id}. "
+                    f"{len(target_data)} entries will be stored to DB.")
         self.accounts.setup_cache(acc_hashes)
         insert_data = []
         for payment in target_data:

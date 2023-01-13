@@ -62,6 +62,6 @@ class PaymentsViewSet(mixins.RetrieveModelMixin,
             logger.exception("XRPL request error")
             raise XRPLServiceUnavailable()
         with transaction.atomic():
-            objects = PaymentsQuery().save_data(trans_data)
+            objects = PaymentsQuery(data["account"]).save_data(trans_data)
         result = serializers.ListPaymentSerializer(instance=objects, many=True)
         return Response(result.data, status=201)
